@@ -1,4 +1,5 @@
 import pygame
+import sys
 import json
 import os
 
@@ -24,6 +25,39 @@ small_font = pygame.font.SysFont("lucidaconsole", HEIGHT // 25, bold=True)
 # Settings file
 SETTINGS_FILE = "settings.json"
 SETTINGS_KEYS = ["work_seconds", "rest_time", "long_break_time"]
+
+
+pygame.mixer.init()
+
+
+# Function to get the path for the sound files
+def resource_path(relative_path):
+    """ Get the absolute path to a resource, works for dev and PyInstaller """
+    try:
+        # PyInstaller creates a temporary folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+
+# Load sound files
+beep_warning = pygame.mixer.Sound(resource_path("beep-warning.mp3"))
+livechat = pygame.mixer.Sound(resource_path("livechat.mp3"))
+notification_positive = pygame.mixer.Sound(resource_path("notification-positive.mp3"))
+
+
+# Sound functions to be used in the timer
+def play_warning_sound():
+    beep_warning.play()
+
+
+def play_livechat_sound():
+    livechat.play()
+
+
+def play_positive_notification():
+    notification_positive.play()
 
 
 def clamp(val, min_val=5, max_val=600):
@@ -138,12 +172,22 @@ while running_game:
 
         elif event.type == TIMER_EVENT and running and not in_settings:
             time_left -= 1
+            if is_working:
+                if (5 >= time_left >= 2) % 2 == 1:
+                    play_livechat_sound()
+                elif time_left == 1:
+                    play_positive_notification()
+            elif not is_working:
+                if time_left == 1:
+                    play_warning_sound()
+
             if time_left <= 0:
                 if reps % 8 == 7 and not is_working:
                     time_left = long_break_time
                 else:
                     is_working = not is_working
                     time_left = work_seconds if is_working else rest_time
+
                 reps += 1
 
     # Drawing
