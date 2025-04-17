@@ -1,4 +1,4 @@
-('C:\\Users\\shado\\PycharmProjects\\HIIT_Timer\\TIMER_ESSENTIALS\\build\\hiit_timer\\PYZ-00.pyz',
+('E:\\PythonCode\\HIIT_Timer\\TIMER_ESSENTIALS\\build\\hiit_timer\\PYZ-00.pyz',
  [('__future__',
    'C:\\Users\\shado\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\__future__.py',
    'PYMODULE'),
